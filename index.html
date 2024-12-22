@@ -17,20 +17,21 @@
     </header>
     <main>
         <form action="/" id="qr-generation-form">
-            <input type="text" name="qr-code-content" id="qr-content" 
-                   value="Owner Name : PH.NO : Owner's message to scanner : "
-                   placeholder="Enter OWNER NAME, PH.NO, MSG OF OWNER, and CAR NO"
-                   autocomplete="off" />
+            <input type="text" name="owner-name" id="owner-name" 
+                   placeholder="Owner's Name" autocomplete="off" required />
+            <input type="text" name="phone-number" id="phone-number" 
+                   placeholder="Phone Number" autocomplete="off" required />
+            <input type="text" name="owner-message" id="owner-message" 
+                   placeholder="Owner's Message to Scanner" autocomplete="off" />
             <input type="submit" value="Generate QR Code" />
         </form>
-        <div id="qr-code"></div>
+        <div id="qr-code" style="text-align: center; margin-top: 20px;"></div>
         <button id="download-btn" style="display: none;">Download QR Code</button>
     </main>
     <script>
-        let qrContentInput = document.getElementById("qr-content");
         let qrGenerationForm = document.getElementById("qr-generation-form");
-        let qrCode;
         let downloadBtn = document.getElementById("download-btn");
+        let qrCode;
 
         function generateQrCode(qrContent) {
             return new QRCode("qr-code", {
@@ -47,7 +48,13 @@
         qrGenerationForm.addEventListener("submit", function (event) {
             // Prevent form submission
             event.preventDefault();
-            let qrContent = qrContentInput.value;
+            const ownerName = document.getElementById("owner-name").value;
+            const phoneNumber = document.getElementById("phone-number").value;
+            const ownerMessage = document.getElementById("owner-message").value;
+
+            // Create QR content
+            const qrContent = `Owner's Name: ${ownerName}\nPhone Number: ${phoneNumber}\nMessage: ${ownerMessage}`;
+
             if (qrCode == null) {
                 // Generate code initially
                 qrCode = generateQrCode(qrContent);
