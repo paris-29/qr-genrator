@@ -1,88 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" href="styles.css" />
+
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" 
-          content="width=device-width, 
-                         initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QR Code Generator</title>
-    <style>
-        h1, h3 {
-          color: green;
-        }
-        body, header {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-    </style>
-
-    <script src=
-"https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
-    </script>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 
 <body>
     <header>
         <h1>ARRS</h1>
-        <h3>MY QR GENRATION</h3>
+        <h3>MY QR GENERATION</h3>
         <h3>Enter QR code content and generate QR</h3>
     </header>
     <main>
-        <form action="/" 
-              id="qr-generation-form">
-            <input type="text"
-       name="qr-code-content"
-       id="qr-content" 
-       value="Owner Name :
-              PH.NO :
-              Owner's message to scanner : "
-       placeholder="Enter OWNER NAME , PH.NO , MSG OF OWNER and ,CAR NO"
-       autocomplete="off"
-       style="width: 600px; height: 70px; font-size: 16px;" />
-
-
-            <input type="submit" 
-                   value="Generate QR Code" />
-        </form><br />
+        <form action="/" id="qr-generation-form">
+            <input type="text" name="qr-code-content" id="qr-content" 
+                   value="Owner Name : PH.NO : Owner's message to scanner : "
+                   placeholder="Enter OWNER NAME, PH.NO, MSG OF OWNER, and CAR NO"
+                   autocomplete="off" />
+            <input type="submit" value="Generate QR Code" />
+        </form>
         <div id="qr-code"></div>
+        <button id="download-btn" style="display: none;">Download QR Code</button>
     </main>
+    <script>
+        let qrContentInput = document.getElementById("qr-content");
+        let qrGenerationForm = document.getElementById("qr-generation-form");
+        let qrCode;
+        let downloadBtn = document.getElementById("download-btn");
+
+        function generateQrCode(qrContent) {
+            return new QRCode("qr-code", {
+                text: qrContent,
+                width: 256,
+                height: 256,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H,
+            });
+        }
+
+        // Event listener for form submit event
+        qrGenerationForm.addEventListener("submit", function (event) {
+            // Prevent form submission
+            event.preventDefault();
+            let qrContent = qrContentInput.value;
+            if (qrCode == null) {
+                // Generate code initially
+                qrCode = generateQrCode(qrContent);
+            } else {
+                // If code already generated then make again using same object
+                qrCode.makeCode(qrContent);
+            }
+            downloadBtn.style.display = "block"; // Show download button
+        });
+
+        // Event listener for download button
+        downloadBtn.addEventListener("click", function () {
+            const canvas = document.querySelector("#qr-code canvas");
+            if (canvas) {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL("image/png");
+                link.download = "qr_code.png";
+                link.click();
+            }
+        });
+    </script>
 </body>
-<script>
-    let qrContentInput = document.getElementById("qr-content");
-    let qrGenerationForm = 
-    document.getElementById("qr-generation-form");
-    let qrCode;
-    
-    function generateQrCode(qrContent) {
-      return new QRCode("qr-code", {
-        text: qrContent,
-        width: 256,
-        height: 256,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H,
-      });
-    }
-    
-    // Event listener for form submit event
-    qrGenerationForm.addEventListener("submit", function (event) {
-      // Prevent form submission
-      event.preventDefault();
-      let qrContent = qrContentInput.value;
-      if (qrCode == null) {
-          
-        // Generate code initially
-        qrCode = generateQrCode(qrContent);
-      } else {
-          
-        // If code already generated then make 
-        // again using same object
-        qrCode.makeCode(qrContent);
-      }
-    });
-</script>
 
 </html>
